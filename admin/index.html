@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>POISE PERFUMES - Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f0f2;--card:#fff;--fg:#2a0f18;--muted:#7a6068;--line:#ead9de;--burg:#5b1025;--crimson:#c41f49}
+@media (prefers-color-scheme:dark){:root{--bg:#1a0b11;--card:#26121a;--fg:#f6eaee;--muted:#b79aa4;--line:#44202c;--crimson:#e0436b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 15px/1.5 Jost,system-ui,sans-serif}
+h1,h2,h3{font-weight:300;text-transform:uppercase;letter-spacing:.1em;margin:0}
+button,input,select{font:inherit;color:inherit}
+header{background:var(--burg);color:#fff;display:flex;align-items:center;gap:14px;padding:10px 24px}
+header img{height:44px;border-radius:4px}header h1{font-size:18px;flex:1}
+main{max-width:1100px;margin:0 auto;padding:24px 20px 60px}
+.btn{border:0;background:var(--crimson);color:#fff;padding:8px 16px;border-radius:4px;cursor:pointer;text-transform:uppercase;letter-spacing:.06em;font-size:13px}
+.btn.ghost{background:none;border:1px solid var(--line);color:var(--fg)}.btn.sm{padding:4px 10px}
+:focus-visible{outline:2px solid var(--crimson);outline-offset:2px}
+input,select{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:7px 10px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:18px;margin-bottom:20px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:20px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.stat b{display:block;font-size:28px;font-weight:300}
+.muted{color:var(--muted);font-size:13px}.tag{color:var(--crimson);font-size:13px}
+.f{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
+.f label{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--muted)}
+.scroll{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:560px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:middle}th{color:var(--muted);font-weight:400;font-size:13px}
+td input[type=number]{width:90px}
+#login{max-width:340px;margin:80px auto}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--burg);color:#fff;padding:10px 18px;border-radius:6px;opacity:0;pointer-events:none;transition:opacity .2s}.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<header><img src="logo.png" alt="POISE PERFUMES"><h1>Admin dashboard</h1><button class="btn ghost sm" id="out" onclick="logout()" hidden style="color:#fff;border-color:rgba(255,255,255,.4)">Sign out</button></header>
+<main>
+<div id="login" class="panel"><h2>Admin sign in</h2><div class="f" style="grid-template-columns:1fr"><label>Password<input id="pw" type="password" onkeydown="if(event.key==='Enter')login()"></label></div><p id="lErr" class="tag"></p><button class="btn" onclick="login()">Sign in</button></div>
+<div id="dash" hidden>
+  <div class="stats" id="stats"></div>
+  <div class="panel"><h3>Exchange rate</h3><p class="muted">Prices are entered in MVR. The storefront shows USD using this rate.</p>
+    1 USD = <input id="rate" type="number" step="0.01" min="0" style="width:100px"> MVR <button class="btn sm" onclick="setRate()">Save rate</button></div>
+  <div class="panel"><h3>Payment settings</h3><p class="muted">Customers choose from these methods at checkout.</p>
+    <p><label><input type="checkbox" id="sCod"> Cash on delivery</label></p>
+    <div class="f"><label>Bank name<input id="sBank"></label><label>Account name<input id="sAName"></label><label>Account number<input id="sANum"></label><label>Note for customers (optional)<input id="sNote"></label></div>
+    <p class="muted">Bank transfer is offered once an account number is filled in. Card payment: <b id="cardSt"></b>. Card gateways are switched on with keys in the server's .env file.</p>
+    <p class="muted">Order emails: <b id="mailSt"></b>. They are set up in the server's .env file.</p>
+    <button class="btn" onclick="saveSettings()">Save payment settings</button> <button class="btn ghost" onclick="testMail()">Send test email</button></div>
+  <div class="panel"><h3>Add a brand</h3><p style="margin:10px 0"><input id="bNew" placeholder="Brand name"> <button class="btn" onclick="addBrand()">Add brand</button></p>
+    <h3 style="margin-top:20px">Add a product</h3>
+    <div class="f"><label>Name<input id="nName"></label><label>Brand<select id="nBrand"></select></label>
+    <label>Category<select id="nCat"><option>Perfume</option><option>Makeup</option><option>Skincare</option><option>Body</option></select></label>
+    <label>Price (MVR)<input id="nPrice" type="number" min="0" step="0.01"></label><label>Stock<input id="nStock" type="number" min="0"></label>
+    <label>Size<input id="nSize" placeholder="e.g. 50ml"></label><label>Notes<input id="nNotes" placeholder="e.g. rose, amber"></label><label>Photo (optional)<input id="nPhoto" type="file" accept="image/*"></label></div>
+    <button class="btn" onclick="addProduct()">Add product</button> <span id="err" class="tag"></span></div>
+  <div class="panel scroll"><h3 style="margin-bottom:8px">Products</h3><table><thead><tr><th>Product</th><th>Brand</th><th>Price (MVR)</th><th>Stock</th><th></th></tr></thead><tbody id="ptb"></tbody></table></div>
+  <div class="panel scroll"><h3 style="margin-bottom:8px">Orders</h3><div id="orders"></div></div>
+  <div class="panel"><h3>Backup</h3><p class="muted">Download a copy of your products, orders and customers, and keep it somewhere safe. Product photos are not included.</p><button class="btn" onclick="backup()">Download backup</button></div>
+</div>
+</main>
+<div class="toast" id="toast" role="status"></div>
+<script src="config.js"></script>
+<script>
+var API=window.POISE_API||'',tok=sessionStorage.getItem('pat')||'',D={products:[],brands:[],rate:15.42,orders:[],customers:0};
+var $=function(i){return document.getElementById(i)};
+var esc=function(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+var mvr=function(n){return 'MVR '+Number(n).toLocaleString('en',{maximumFractionDigits:2})};
+async function api(p,o){o=o||{};var r=await fetch(API+p,{method:o.method||'GET',headers:Object.assign({'Content-Type':'application/json'},tok?{Authorization:'Bearer '+tok}:{}),body:o.body?JSON.stringify(o.body):undefined});var d=await r.json().catch(function(){return{}});if(!r.ok){if(r.status===401&&tok)logout();throw new Error(d.error||'Request failed')}return d}
+function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1800)}
+async function login(){try{var d=await api('/api/admin/login',{method:'POST',body:{password:$('pw').value}});tok=d.token;sessionStorage.setItem('pat',tok);start()}catch(e){$('lErr').textContent=e.message}}
+function logout(){tok='';sessionStorage.removeItem('pat');$('dash').hidden=true;$('out').hidden=true;$('login').hidden=false}
+async function start(){
+  try{var s=await api('/api/store'),o=await api('/api/admin/orders'),st=await api('/api/admin/settings');D={products:s.products,brands:s.brands,rate:s.rate,orders:o.orders,customers:o.customers,st:st}}catch(e){return}
+  $('login').hidden=true;$('dash').hidden=false;$('out').hidden=false;draw();if(!window._sf){fillSettings();window._sf=1}$('mailSt').textContent=D.st.mail?'on'+(D.st.shopEmail?'':' (add SHOP_EMAIL to get new-order alerts)'):'off'
+}
+function draw(){
+  var rev=0,pend=0,low=0;D.orders.forEach(function(o){rev+=o.total;if(o.status==='Processing')pend++});D.products.forEach(function(p){if(p.stock<=5)low++});
+  $('stats').innerHTML=[['Revenue',mvr(rev)],['Orders',D.orders.length],['To ship',pend],['Low or out of stock',low],['Customer accounts',D.customers]].map(function(x){return '<div class="stat"><span class="muted">'+x[0]+'</span><b>'+x[1]+'</b></div>'}).join('');
+  $('rate').value=D.rate;var cur=$('nBrand').value;
+  $('nBrand').innerHTML=D.brands.map(function(b){return '<option>'+esc(b)+'</option>'}).join('');if(cur)$('nBrand').value=cur;
+  $('ptb').innerHTML=D.products.map(function(p){return '<tr><td>'+(p.image?'<img src="'+esc(API+p.image)+'" alt="" style="width:44px;height:44px;object-fit:cover;border-radius:4px;vertical-align:middle;margin-right:8px">':'')+'<b>'+esc(p.name)+'</b><br><span class="muted">'+esc(p.cat)+' · '+esc(p.size)+'</span></td><td>'+esc(p.brand)+'</td><td><input type="number" min="0" step="0.01" value="'+p.price+'" onchange="upd('+p.id+',\'price\',this.value)" aria-label="Price"></td><td><input type="number" min="0" value="'+p.stock+'" onchange="upd('+p.id+',\'stock\',this.value)" aria-label="Stock"></td><td><input type="file" accept="image/*" style="max-width:150px" onchange="photo('+p.id+',this.files[0])" aria-label="Upload photo"> <button class="btn ghost sm" onclick="del('+p.id+')">Delete</button></td></tr>'}).join('');
+  $('orders').innerHTML=D.orders.length?'<table><thead><tr><th>Order</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th></tr></thead><tbody>'+D.orders.map(function(o){return '<tr><td>#'+o.id+'<br><span class="muted">'+esc((o.date||'').slice(0,10))+'</span></td><td>'+esc(o.customer)+(o.email||o.notify?' ('+esc(o.email||o.notify)+')':'')+'<br><span class="muted">'+esc(o.address)+'</span></td><td>'+o.items.map(function(x){return esc(x.name)+' ×'+x.qty}).join('<br>')+'</td><td>'+mvr(o.total)+'</td><td>'+esc(({cod:'Cash on delivery',bank:'Bank transfer',card_bml:'Card (BML)',card_mib:'Card (MIB)'})[o.payMethod]||o.payMethod||'-')+(o.payRef?'<br><span class="muted">Ref: '+esc(o.payRef)+'</span>':'')+'<br><select onchange="setPay('+o.id+',this.value)" aria-label="Payment status">'+['Pay on delivery','Awaiting transfer','Pending card payment','Paid','Payment failed'].map(function(s){return '<option'+(s===(o.payStatus||'')?' selected':'')+'>'+s+'</option>'}).join('')+'</select></td><td><select onchange="setStatus('+o.id+',this.value)" aria-label="Order status">'+['Processing','Shipped','Delivered','Cancelled'].map(function(s){return '<option'+(s===o.status?' selected':'')+'>'+s+'</option>'}).join('')+'</select></td></tr>'}).join('')+'</tbody></table>':'<p class="muted">No orders yet. Orders placed on the storefront appear here.</p>';
+}
+async function run(f,msg){try{await f();await start();if(msg)toast(msg)}catch(e){toast(e.message)}}
+function fillSettings(){var s=D.st.settings,b=s.bank;$('sCod').checked=!!s.cod;$('sBank').value=b.bankName;$('sAName').value=b.accountName;$('sANum').value=b.accountNumber;$('sNote').value=b.instructions;$('cardSt').textContent='Bank of Maldives '+(D.st.cards.bml?'connected':'not connected')+', MIB '+(D.st.cards.mib?'connected':'not connected')}
+function saveSettings(){run(function(){return api('/api/admin/settings',{method:'PUT',body:{cod:$('sCod').checked,bank:{bankName:$('sBank').value,accountName:$('sAName').value,accountNumber:$('sANum').value,instructions:$('sNote').value}}})},'Payment settings saved')}
+async function backup(){try{var r=await fetch(API+'/api/admin/backup',{headers:{Authorization:'Bearer '+tok}});if(!r.ok)throw new Error('Backup failed');var b=await r.blob(),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='poise-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href)}catch(e){toast(e.message)}}
+function testMail(){run(function(){return api('/api/admin/test-email',{method:'POST',body:{}})},'Test email sent')}
+function setPay(id,s){run(function(){return api('/api/admin/orders/'+id,{method:'PUT',body:{payStatus:s}})},'Payment marked '+s)}
+function shrink(file){return new Promise(function(ok,no){var img=new Image(),u=URL.createObjectURL(file);img.onload=function(){var s=Math.min(1,900/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);var x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(u);ok(c.toDataURL('image/jpeg',.85))};img.onerror=function(){no(new Error('Could not read that image'))};img.src=u})}
+async function uploadImg(id,f){var d=await shrink(f);await api('/api/admin/products/'+id+'/image',{method:'PUT',body:{data:d}})}
+function photo(id,f){if(f)run(function(){return uploadImg(id,f)},'Photo saved')}
+function upd(id,k,v){var b={};b[k]=v;run(function(){return api('/api/admin/products/'+id,{method:'PUT',body:b})})}
+function del(id){if(confirm('Delete this product?'))run(function(){return api('/api/admin/products/'+id,{method:'DELETE'})},'Product deleted')}
+function setStatus(id,s){run(function(){return api('/api/admin/orders/'+id,{method:'PUT',body:{status:s}})},'Order marked '+s)}
+function setRate(){run(function(){return api('/api/admin/rate',{method:'PUT',body:{rate:$('rate').value}})},'Rate saved')}
+function addBrand(){var n=$('bNew').value;run(function(){return api('/api/admin/brands',{method:'POST',body:{name:n}})},'Brand added').then(function(){$('bNew').value=''})}
+function addProduct(){
+  $('err').textContent='';
+  run(async function(){var np=await api('/api/admin/products',{method:'POST',body:{name:$('nName').value,brand:$('nBrand').value,cat:$('nCat').value,price:$('nPrice').value,stock:$('nStock').value,size:$('nSize').value,notes:$('nNotes').value}});var pf=$('nPhoto').files[0];if(pf)await uploadImg(np.id,pf);
+    ['nName','nPrice','nStock','nSize','nNotes','nPhoto'].forEach(function(i){$(i).value=''})},'Product added. It is live on the storefront.').then(function(){});
+}
+if(tok)start();
+</script>
+</body>
+</html>

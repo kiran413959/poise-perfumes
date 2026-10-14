@@ -1,0 +1,8 @@
+{
+  "name": "poise-shop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "POISE PERFUMES online shop",
+  "scripts": { "start": "node server/server.js" },
+  "engines": { "node": ">=18" }
+}

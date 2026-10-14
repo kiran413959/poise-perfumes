@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Secure payment - POISE PERFUMES</title>
+</head>
+<body style="font-family:system-ui,sans-serif;text-align:center;padding:40px;background:#fbf7f8;color:#2a0f18">
+<img src="logo.png" width="80" alt="POISE PERFUMES" style="border-radius:6px">
+<p id="m">Taking you to the secure payment page...</p>
+<script src="config.js"></script>
+<script>
+var api=window.POISE_API||'',q=new URLSearchParams(location.search),s=q.get('session')||'',n=(q.get('order')||'').replace(/\D/g,'');
+function fail(){document.getElementById('m').textContent='The payment page could not be opened. Please go back to the shop and try again.'}
+window.errorCallback=fail;
+window.cancelCallback=function(){location.href=api+'/api/pay/return?order='+n};
+if(!/^[A-Za-z0-9_-]{8,80}$/.test(s)||!n)fail();
+else fetch(api+'/api/pay/mib-config').then(function(r){return r.json()}).then(function(c){
+  if(!c.host||!/^[a-z0-9.-]+$/i.test(c.host))return fail();
+  var sc=document.createElement('script');
+  sc.setAttribute('data-error','errorCallback');sc.setAttribute('data-cancel','cancelCallback');
+  sc.onload=function(){Checkout.configure({session:{id:s}});Checkout.showPaymentPage()};
+  sc.onerror=fail;sc.src='https://'+c.host+'/static/checkout/checkout.min.js';document.head.appendChild(sc);
+}).catch(fail);
+</script>
+</body>
+</html>

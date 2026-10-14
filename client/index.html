@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>POISE PERFUMES</title>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fbf7f8;--card:#fff;--fg:#2a0f18;--muted:#7a6068;--line:#ead9de;--burg:#5b1025;--burg2:#6f1630;--crimson:#c41f49}
+@media (prefers-color-scheme:dark){:root{--bg:#1a0b11;--card:#26121a;--fg:#f6eaee;--muted:#b79aa4;--line:#44202c;--crimson:#e0436b}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 15px/1.55 Jost,system-ui,sans-serif}
+h1,h2,h3{font-weight:300;text-transform:uppercase;letter-spacing:.12em;margin:0}
+button,input,select{font:inherit;color:inherit}
+.announce{background:var(--crimson);color:#fff;text-align:center;font-size:13px;padding:6px 12px;letter-spacing:.06em}
+header{background:var(--burg);color:#fff;display:flex;align-items:center;gap:18px;padding:10px 24px;flex-wrap:wrap;position:sticky;top:0;z-index:5}
+.logo{height:48px;width:48px;border-radius:4px}
+nav{display:flex;gap:4px;flex:1;flex-wrap:wrap}
+nav button,nav a{background:none;border:0;color:#fff;text-decoration:none;text-transform:uppercase;letter-spacing:.1em;font-size:13px;padding:8px 12px;cursor:pointer;border-bottom:2px solid transparent}
+nav .on,nav button:hover,nav a:hover{border-color:var(--crimson)}
+.tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tools input,.tools select{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);border-radius:6px;padding:7px 10px;color:#fff}
+.tools input::placeholder{color:#e8c9d2}.tools option{color:#000}
+.btn{border:0;background:var(--crimson);color:#fff;padding:9px 18px;border-radius:4px;cursor:pointer;text-transform:uppercase;letter-spacing:.08em;font-size:13px;text-decoration:none;display:inline-block}
+.btn.alt{background:none;border:1px solid rgba(255,255,255,.4)}
+.btn.ghost{background:none;border:1px solid var(--line);color:var(--fg)}.btn.sm{padding:5px 10px}
+:focus-visible{outline:2px solid var(--crimson);outline-offset:2px}
+.hero{background:linear-gradient(120deg,var(--burg),var(--burg2) 60%,#7d1a37);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:56px 24px;overflow:hidden}
+.hero>div{max-width:520px;margin-left:max(0px,calc((100vw - 1100px)/2))}
+.hero h1{font-size:clamp(30px,5vw,52px);line-height:1.1;margin:8px 0 14px}
+.hero p{color:#ecd2da;margin:0 0 22px}.eyebrow{letter-spacing:.3em;font-size:12px;color:#f3a9bc}
+.hero img{width:min(300px,40vw);opacity:.9;border-radius:6px;margin-right:max(0px,calc((100vw - 1100px)/2))}
+section{max-width:1100px;margin:0 auto;padding:34px 20px 6px}
+section h2{font-size:22px;margin-bottom:16px;border-left:3px solid var(--crimson);padding-left:12px}
+.strip{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px}
+.chip{border:1px solid var(--line);background:var(--card);padding:6px 16px;border-radius:99px;cursor:pointer;white-space:nowrap}
+.chip.on{background:var(--burg);color:#fff;border-color:var(--burg)}
+.bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.bar select,.f input{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:8px 12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+.p{background:var(--card);border:1px solid var(--line);border-radius:6px;overflow:hidden;display:flex;flex-direction:column}
+.p .img{background:linear-gradient(160deg,var(--bg),var(--line));padding:18px;display:flex;justify-content:center}
+.p svg{height:120px}.p .img img{height:160px;max-width:100%;object-fit:contain}.p .b{padding:14px;display:flex;flex-direction:column;gap:3px;flex:1}
+.p h3{font-size:14px;letter-spacing:.06em;font-weight:500}.muted{color:var(--muted);font-size:13px}
+.p .row{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:10px}
+.price{font-weight:500}.tag{font-size:12px;color:var(--crimson)}
+.trust{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;text-align:center;padding-top:40px}
+.trust div{border:1px solid var(--line);background:var(--card);padding:18px;border-radius:6px;font-size:14px}
+footer{background:var(--burg);color:#ecd2da;margin-top:44px;padding:30px 24px;text-align:center;font-size:14px}
+footer b{color:#fff;letter-spacing:.2em}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(400px,100%);background:var(--card);border-left:1px solid var(--line);padding:18px;transform:translateX(105%);transition:transform .25s;z-index:10;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.drawer.open{transform:none}
+.line{display:flex;justify-content:space-between;gap:8px;align-items:center;border-bottom:1px solid var(--line);padding:8px 0}
+.f{display:grid;gap:10px}.f label{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--burg);color:#fff;padding:10px 18px;border-radius:6px;z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}.ok{color:#2f7d4f}
+@media (prefers-reduced-motion:reduce){.drawer,.toast{transition:none}}
+@media (max-width:640px){.hero img{display:none}}
+</style>
+</head>
+<body>
+<div class="announce">Authentic perfumes &amp; cosmetics from the brands you love</div>
+<div class="announce" id="payBanner" hidden style="background:var(--burg2)"></div>
+<header>
+  <img class="logo" src="logo.png" alt="POISE PERFUMES">
+  <nav id="nav"></nav>
+  <div class="tools">
+    <input id="q" type="search" placeholder="Search" aria-label="Search" oninput="draw()">
+    <select id="cur" aria-label="Currency" onchange="disp=this.value;draw();drawCart()"><option>MVR</option><option>USD</option></select>
+    <button class="btn alt" id="acctBtn" onclick="openAcct()">Sign in</button>
+    <button class="btn" id="cartBtn" onclick="toggleCart(true)">Cart (0)</button>
+  </div>
+</header>
+
+<div class="hero">
+  <div><span class="eyebrow">POISE PERFUMES</span><h1>Fragrance with poise</h1><p>Perfumes, makeup, skincare and body care from over twenty brands, all in one place.</p><a class="btn" href="#shop">Shop now</a></div>
+  <img src="logo.png" alt="">
+</div>
+
+<section id="brandsec"><h2>Shop by brand</h2><div class="strip" id="brands"></div></section>
+<section><h2>New arrivals</h2><div class="grid" id="newgrid"></div></section>
+<section id="shop"><h2>All products</h2>
+  <div class="bar"><select id="sort" aria-label="Sort" onchange="draw()"><option value="">Sort: featured</option><option value="lo">Price: low to high</option><option value="hi">Price: high to low</option></select></div>
+  <div class="grid" id="grid"></div>
+</section>
+<section class="trust"><div>Authentic brands</div><div>Perfume, makeup &amp; skincare</div><div>Order online anytime</div><div>Prices in MVR and USD</div></section>
+<footer><b>POISE PERFUMES</b><p>Add your phone number, email and address here.</p></footer>
+
+<aside class="drawer" id="cartD" aria-label="Cart"><div class="line"><h3>Your cart</h3><button class="btn ghost sm" onclick="toggleCart(false)">Close</button></div><div id="cartBody"></div></aside>
+<aside class="drawer" id="acctD" aria-label="Account"><div class="line"><h3>Account</h3><button class="btn ghost sm" onclick="acctD.classList.remove('open')">Close</button></div><div id="acctBody"></div></aside>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="config.js"></script>
+<script>
+var API=window.POISE_API||'',tok=sessionStorage.getItem('pt')||'',nm=sessionStorage.getItem('pn')||'';
+var S={brands:[],products:[],rate:15.42,pay:{methods:{},bank:{}}},cart={},cat='',brand='',disp='MVR',mode='in';
+var $=function(i){return document.getElementById(i)};
+var esc=function(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+async function api(p,o){o=o||{};var r=await fetch(API+p,{method:o.method||'GET',headers:Object.assign({'Content-Type':'application/json'},tok?{Authorization:'Bearer '+tok}:{}),body:o.body?JSON.stringify(o.body):undefined});var d=await r.json().catch(function(){return{}});if(!r.ok)throw new Error(d.error||'Request failed');return d}
+function money(n){return disp==='USD'?'$'+(n/S.rate).toFixed(2):'MVR '+Number(n).toLocaleString('en',{maximumFractionDigits:2})}
+function toast(m){var t=$('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1800)}
+function bottle(h){return '<svg viewBox="0 0 80 100" aria-hidden="true"><rect x="30" y="4" width="20" height="14" rx="3" fill="hsl('+h+' 30% 25%)"/><rect x="34" y="18" width="12" height="9" fill="hsl('+h+' 20% 70%)"/><rect x="14" y="27" width="52" height="66" rx="10" fill="hsl('+h+' 45% 62%)"/><rect x="22" y="47" width="36" height="24" rx="3" fill="rgba(255,255,255,.75)"/></svg>'}
+function card(p){var out=p.stock<=0;return '<article class="p"><div class="img">'+(p.image?'<img src="'+esc(API+p.image)+'" alt="'+esc(p.name)+'">':bottle(p.hue))+'</div><div class="b"><span class="muted">'+esc(p.brand)+'</span><h3>'+esc(p.name)+'</h3><span class="muted">'+esc(p.size)+(p.notes?' · '+esc(p.notes):'')+'</span>'+(!out&&p.stock<=5?'<span class="tag">Only '+p.stock+' left</span>':'')+'<div class="row"><span class="price">'+money(p.price)+'</span>'+(out?'<span class="muted">Sold out</span>':'<button class="btn sm" onclick="add('+p.id+')">Add</button>')+'</div></div></article>'}
+function draw(){
+  $('nav').innerHTML=[['','All'],['Perfume'],['Makeup'],['Skincare'],['Body']].map(function(c){var v=c[0],l=c[1]||c[0];return '<button class="'+(cat===v?'on':'')+'" data-c="'+v+'" onclick="setCat(this.dataset.c)">'+l+'</button>'}).join('')+'<a href="#brandsec">Brands</a>';
+  $('brands').innerHTML=['All'].concat(S.brands).map(function(b){var v=b==='All'?'':b;return '<button class="chip'+(brand===v?' on':'')+'" data-b="'+esc(v)+'" onclick="setBrand(this.dataset.b)">'+esc(b)+'</button>'}).join('');
+  $('newgrid').innerHTML=S.products.slice(-4).reverse().map(card).join('');
+  var q=$('q').value.toLowerCase(),s=$('sort').value;
+  var l=S.products.filter(function(p){return(!cat||p.cat===cat)&&(!brand||p.brand===brand)&&(!q||(p.name+' '+p.notes+' '+p.brand).toLowerCase().indexOf(q)>=0)});
+  if(s==='lo')l.sort(function(a,b){return a.price-b.price});if(s==='hi')l.sort(function(a,b){return b.price-a.price});
+  $('grid').innerHTML=l.length?l.map(card).join(''):'<p class="muted">No products match. Clear the search or pick another brand.</p>';
+  $('cartBtn').textContent='Cart ('+count()+')';$('acctBtn').textContent=tok?nm.split(' ')[0]:'Sign in';
+}
+function setCat(c){cat=c;draw();$('shop').scrollIntoView()}
+function setBrand(b){brand=b;draw();$('shop').scrollIntoView()}
+var find=function(id){return S.products.filter(function(p){return p.id===id})[0]};
+function count(){var n=0;for(var k in cart)n+=cart[k];return n}
+function total(){var t=0;for(var k in cart)t+=find(+k).price*cart[k];return t}
+function add(id){var p=find(id),n=(cart[id]||0)+1;if(n>p.stock){toast('No more stock');return}cart[id]=n;draw();toast('Added '+p.name)}
+function qty(id,d){var p=find(id),n=(cart[id]||0)+d;if(n<=0)delete cart[id];else if(n<=p.stock)cart[id]=n;drawCart();draw()}
+function toggleCart(o){$('cartD').classList.toggle('open',o);if(o)drawCart()}
+function drawCart(){
+  if(!count()){$('cartBody').innerHTML='<p class="muted">Your cart is empty.</p>';return}
+  var h='';for(var k in cart){var p=find(+k);h+='<div class="line"><div><b>'+esc(p.name)+'</b><br><span class="muted">'+money(p.price)+'</span></div><div><button class="btn ghost sm" onclick="qty('+p.id+',-1)" aria-label="Remove one">−</button> '+cart[k]+' <button class="btn ghost sm" onclick="qty('+p.id+',1)" aria-label="Add one">+</button></div></div>'}
+  $('cartBody').innerHTML=h+'<div class="line"><b>Total</b><b>'+money(total())+'</b></div><div class="f"><label>Full name<input id="cName" value="'+esc(nm)+'"></label><label>Delivery address<input id="cAddr"></label>'+(tok?'':'<label>Email for order updates (optional)<input id="cEmail" type="email"></label>')+'</div>'+payHtml()+'<p id="cErr" class="tag"></p><button class="btn" onclick="checkout()">Place order</button>';if($('cPay'))payNote()
+}
+function payHtml(){var m=S.pay.methods,o='';if(m.cod)o+='<option value="cod">Cash on delivery</option>';if(m.bank)o+='<option value="bank">Bank transfer</option>';if(m.card_bml)o+='<option value="card_bml">Card or online banking (Bank of Maldives)</option>';if(m.card_mib)o+='<option value="card_mib">Card (Maldives Islamic Bank)</option>';
+  return o?'<div class="f"><label>Payment method<select id="cPay" onchange="payNote()">'+o+'</select></label><label id="cRefL" hidden>Transfer reference (optional)<input id="cRef" placeholder="e.g. slip number"></label></div><p class="muted" id="cPayNote"></p>':'<p class="tag">No payment method is available right now. Please contact us.</p>'}
+function payNote(){var v=$('cPay').value;$('cRefL').hidden=v!=='bank';$('cPayNote').textContent=v==='bank'?'You will see the bank details after placing the order. Your order is confirmed once we receive the transfer.':v==='cod'?'Pay in cash when your order is delivered.':v.indexOf('card')===0?'You will be taken to the secure payment page of the bank. We never see your card details.':''}
+async function checkout(){
+  try{var o=await api('/api/orders',{method:'POST',body:{customer:$('cName').value.trim(),address:$('cAddr').value.trim(),items:Object.keys(cart).map(function(k){return{id:+k,qty:cart[k]}}),payMethod:$('cPay')?$('cPay').value:'',payRef:$('cRef')?$('cRef').value:'',email:$('cEmail')?$('cEmail').value:''}});
+    cart={};S=await api('/api/store');draw();if(o.payUrl){location.href=o.payUrl;return}var bk=o.bank?'<div class="line" style="display:block"><b>Pay by bank transfer</b><br>Amount: MVR '+o.total.toLocaleString('en')+'<br>Bank: '+esc(o.bank.bankName)+'<br>Account name: '+esc(o.bank.accountName)+'<br>Account number: '+esc(o.bank.accountNumber)+'<br>Reference: Order #'+o.id+(o.bank.instructions?'<br><span class="muted">'+esc(o.bank.instructions)+'</span>':'')+'</div>':'';
+    $('cartBody').innerHTML='<p class="ok"><b>Order #'+o.id+' placed.</b></p>'+bk+'<p class="muted">'+(o.bank?'We will confirm your order once the transfer is received.':'Thank you. We will be in touch about delivery.')+'</p>'}
+  catch(e){$('cErr').textContent=e.message}
+}
+function openAcct(){$('acctD').classList.add('open');drawAcct()}
+async function drawAcct(){
+  if(tok){var os=[];try{os=await api('/api/me/orders')}catch(e){}
+    $('acctBody').innerHTML='<p><b>Hello, '+esc(nm)+'</b></p><h3>Your orders</h3>'+(os.length?os.map(function(o){return '<div class="line"><div><b>#'+o.id+'</b> · '+esc(o.status)+(o.payStatus?' · '+esc(o.payStatus):'')+'<br><span class="muted">'+o.items.map(function(x){return esc(x.name)+' ×'+x.qty}).join(', ')+'</span></div><b>'+money(o.total)+'</b></div>'}).join(''):'<p class="muted">No orders yet.</p>')+'<p><button class="btn ghost" onclick="logout()">Sign out</button></p>';return}
+  $('acctBody').innerHTML='<div class="strip"><button class="chip'+(mode==='in'?' on':'')+'" data-m="in" onclick="mode=this.dataset.m;drawAcct()">Sign in</button><button class="chip'+(mode==='up'?' on':'')+'" data-m="up" onclick="mode=this.dataset.m;drawAcct()">Create account</button></div><div class="f">'+(mode==='up'?'<label>Full name<input id="aName"></label>':'')+'<label>Email<input id="aMail" type="email"></label><label>Password<input id="aPass" type="password"></label></div><p id="aErr" class="tag"></p><button class="btn" onclick="auth()">'+(mode==='up'?'Create account':'Sign in')+'</button>';
+}
+async function auth(){
+  try{var d=await api(mode==='up'?'/api/register':'/api/login',{method:'POST',body:{name:mode==='up'?$('aName').value:'',email:$('aMail').value,password:$('aPass').value}});
+    tok=d.token;nm=d.name;sessionStorage.setItem('pt',tok);sessionStorage.setItem('pn',nm);draw();drawAcct();toast('Signed in')}
+  catch(e){$('aErr').textContent=e.message}
+}
+function logout(){tok='';nm='';sessionStorage.removeItem('pt');sessionStorage.removeItem('pn');draw();drawAcct()}
+(function(){var q=new URLSearchParams(location.search),st=q.get('pay');if(!st)return;var t={paid:'Payment received for order #'+q.get('order')+'. Thank you!',failed:'The payment was not completed. Please try again or choose another method.',pending:'We have not received your payment yet. If you paid, we will confirm shortly.'}[st];if(t){var b=$('payBanner');b.textContent=t;b.hidden=false}history.replaceState(null,'',location.pathname)})();
+(async function(){try{S=await api('/api/store');draw()}catch(e){$('grid').innerHTML='<p class="muted">Cannot reach the shop server. Start it with: node server/server.js</p>'}})();
+</script>
+</body>
+</html>
